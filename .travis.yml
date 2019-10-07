@@ -1,10 +1,11 @@
 # We set the language to c because python isn't supported on the MacOS X nodes
 # on Travis. However, the language ends up being irrelevant anyway, since we
 # install Python ourselves using conda.
-language: python
+language: c
 
 os:
     - linux
+    - windows
 
 # Use Travis' container-based architecture
 sudo: false
@@ -14,31 +15,34 @@ env:
         # The following versions are the 'default' for tests, unless
         # overidden underneath. They are defined here in order to save having
         # to repeat them for all configurations.
-        - PYTHON_VERSION=3.6
-        - PYTEST_VERSION=3.4
+        - PYTHON_VERSION=3.7
+        - PYTEST_VERSION=4
         - PYTEST_COMMAND='pytest'
         - NUMPY_VERSION=stable
-        - CONDA_DEPENDENCIES='six'
+        - CONDA_DEPENDENCIES='astropy'
 
     matrix:
-        - PYTHON_VERSION=2.7 PYTEST_VERSION=2.8 PYTEST_COMMAND='py.test'
+        - PYTHON_VERSION=2.7 PYTEST_COMMAND='py.test'
         - PYTHON_VERSION=2.7
-        - PYTHON_VERSION=3.5
+        - PYTHON_VERSION=3.5 NUMPY_VERSION=1.15
         - PYTHON_VERSION=3.6
-        - PYTHON_VERSION=3.6 PYTEST_VERSION=3.5
-        - PYTHON_VERSION=3.6 PYTEST_VERSION=3.6
+        - PYTHON_VERSION=3.7 PYTEST_VERSION=3.8
+        - PYTHON_VERSION=3.7 PYTEST_VERSION=3.9
+        - PYTHON_VERSION=3.7
 
 matrix:
     include:
         # Try a run on OSX with latest versions of python and pytest
         - os: osx
-          env: PYTHON_VERSION=3.7 PYTEST_VERSION=3.7
+          env: PYTHON_VERSION=3.7
+
+        # Try a run against latest pytest
+        - env: PYTHON_VERSION=3.7 PYTEST_VERSION=5
 
 install:
     - git clone git://github.com/astropy/ci-helpers.git
     - source ci-helpers/travis/setup_conda.sh
-    - python ./setup.py install
+    - pip install -e .
 
 script:
-   - $PYTEST_COMMAND --doctest-plus
-   - $PYTEST_COMMAND --doctest-plus --doctest-rst
+   - $PYTEST_COMMAND

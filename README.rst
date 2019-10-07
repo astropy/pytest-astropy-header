@@ -56,29 +56,28 @@ with diagnostic information before running the tests, e.g.::
 
     Using Astropy options: remote_data: none.
 
-To enable this plugin, the easiest way is to add::
+The most robust way to enable the plugin in a way that will work regardless of
+how the tests are run (e.g. via ``python setup.py test``, ``pytest``, or
+``package.test()``) is to add the following to a ``conftest.py`` file that is
+inside your package::
 
-    astropy_header = true
+    def pytest_configure(config):
+        config.option.astropy_header = True
 
-in the ``[tool:pytest]`` section of your ``setup.cfg`` file. You can also
-specify ``--astropy-header`` on the command-line if you want to enable it as a
-one-off.
 
-You can customize the list of packages shown in the list of package versions
-by adding an ``astropy_header_packages`` entry in the ``[tool:pytest]`` section
-of ``setup.cfg``, either as a comma-separated list of package names::
+By default, a few packages will be shown, but you may want to customize how the
+packages appear. As for enabling the plugin, the most robust way to do this to
+be compatible with different astropy versions is via the ``conftest.py`` file::
 
-    astropy_header_packages = numpy, scipy, matplotlib
+    from pytest_astropy.display import PYTEST_HEADER_MODULES, TESTED_VERSIONS
 
-or with one package per line::
+    def pytest_configure(config):
+        config.option.astropy_header = True
+        PYTEST_HEADER_MODULES.pop('Pandas')
+        PYTEST_HEADER_MODULES['scikit-image'] = 'skimage'
 
-    astropy_header_packages =
-        numpy
-        scipy
-        matplotlib
-
-Note that these should be package names, not module names (so e.g.
-``scikit-image`` rather than ``skimage``).
+The key to ``PYTEST_HEADER_MODULES`` should be the name that will be displayed
+in the header, and the value should be the name of the Python module.
 
 Migrating from the astropy header plugin to pytest-astropy
 ----------------------------------------------------------
@@ -89,23 +88,8 @@ header of the testing output described above lived in
 to make sure that only the pytest-astropy version is used instead. These should
 be done in addition to the configuration mentioned in the previous section.
 
-First, disable the default ``astropy.tests.plugins.display`` plugin by adding::
-
-    [test]
-    plugins =
-
-to your ``setup.cfg`` (with the ``plugins = `` entry deliberately empty). This
-section can be removed once you support only Astropy 4.0 and later.
-
-Once this is done, edit the ``conftest.py`` file inside your package and remove
-any import of:
-
-* ``pytest_report_header``
-* ``PYTEST_HEADER_MODULES``
-* ``TESTED_VERSIONS``
-
-and remove any use of these variables later in the file. If you are using the
-default file from the package template, this means you can remove::
+First, you should be able to significantly simplify the ``conftest.py`` file by
+replacing e.g.::
 
     from astropy.version import version as astropy_version
     if astropy_version < '3.0':
@@ -139,30 +123,47 @@ default file from the package template, this means you can remove::
     TESTED_VERSIONS[packagename] = version
     TESTED_VERSIONS['astropy_helpers'] = astropy_helpers_version
 
-If you had previously added or removed packages from ``PYTEST_HEADER_MODULES``
-and/or ``TESTED_VERSIONS``, you can specify these plugins in
-``astropy_header_packages`` (see `Header plugin`_).
+with e.g.::
 
-Finally, check all of your ``conftest.py`` files and be sure to remove the
+    import os
+
+    from astropy.version import version as astropy_version
+    if astropy_version < '3.0':
+        from astropy.tests.pytest_plugins import *
+        del pytest_report_header
+    else:
+        from pytest_astropy.display import PYTEST_HEADER_MODULES, TESTED_VERSIONS
+
+
+    def pytest_configure(config):
+
+        config.option.astropy_header = True
+
+        PYTEST_HEADER_MODULES.pop('Pandas', None)
+        PYTEST_HEADER_MODULES['scikit-image'] = 'skimage'
+
+        from .version import version, astropy_helpers_version
+        packagename = os.path.basename(os.path.dirname(__file__))
+        TESTED_VERSIONS[packagename] = version
+        TESTED_VERSIONS['astropy_helpers'] = astropy_helpers_version
+
+Note that while you will need to use a recent version of pytest-astropy for this
+to work, it should work with Astropy 2.0 onwards without requiring all the
+``try...except`` for imports.
+
+Next check all of your ``conftest.py`` files and be sure to remove the old
 plugin from lists such as::
 
     pytest_plugins = [
       'astropy.tests.plugins.display',
     ]
 
-you should see the new header with current and future versions of astropy, and
-when running ``python setup.py test`` or ``pytest`` directly.
-
-Note that when running ``packagename.test()`` on an installed package, the old
-header plugin from astropy will be used prior to Astropy 4.0, and the new header
-plugin should be used with Astropy 4.0 and later.
-
 Development Status
 ------------------
 
 Questions, bug reports, and feature requests can be submitted on `github`_.
 
-.. _github: https://github.com/astropy/pytest-astropy-header
+.. _github: https://github.com/astropy/pytest-astropy
 
 License
 -------
