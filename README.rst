@@ -69,7 +69,7 @@ By default, a few packages will be shown, but you may want to customize how the
 packages appear. As for enabling the plugin, the most robust way to do this to
 be compatible with different astropy versions is via the ``conftest.py`` file::
 
-    from pytest_astropy.display import PYTEST_HEADER_MODULES, TESTED_VERSIONS
+    from pytest_astropy_header.display import PYTEST_HEADER_MODULES, TESTED_VERSIONS
 
     def pytest_configure(config):
         config.option.astropy_header = True
@@ -132,7 +132,7 @@ with e.g.::
         from astropy.tests.pytest_plugins import *
         del pytest_report_header
     else:
-        from pytest_astropy.display import PYTEST_HEADER_MODULES, TESTED_VERSIONS
+        from pytest_astropy_header.display import PYTEST_HEADER_MODULES, TESTED_VERSIONS
 
 
     def pytest_configure(config):
