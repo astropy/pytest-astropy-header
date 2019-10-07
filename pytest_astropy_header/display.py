@@ -8,25 +8,46 @@ import os
 import sys
 import datetime
 import locale
-import math
-from collections import OrderedDict
+from pkg_resources import working_set
+from setuptools.config import read_configuration
 
-from astropy.tests.helper import ignore_warnings
-from astropy.utils.introspection import resolve_name
+DEFAULT_PACKAGES = ['numpy', 'scipy', 'matplotlib', 'h5py', 'pandas']
 
 
-PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
-                                     ('Scipy', 'scipy'),
-                                     ('Matplotlib', 'matplotlib'),
-                                     ('h5py', 'h5py'),
-                                     ('Pandas', 'pandas')])
-
-# This always returns with Astropy's version
-from astropy import __version__
-TESTED_VERSIONS = OrderedDict([('Astropy', __version__)])
+def pytest_addoption(parser):
+    group = parser.getgroup("astropy header options")
+    group.addoption('--astropy-header', action='store_true',
+                    help="Show the pytest-astropy header")
+    parser.addini('astropy_header', default=False,
+                  help="whether to show the pytest-astropy header")
+    parser.addini('astropy_header_packages', type='linelist',
+                  help="comma-separated list of packages to include in the header")
 
 
 def pytest_report_header(config):
+
+    if not config.getoption('--astropy-header') and not config.getini("astropy_header"):
+        return
+
+    # Determine package name
+    package_name = None
+    if os.path.exists('setup.cfg'):
+        setup_cfg = read_configuration('setup.cfg')
+        if 'metadata' in setup_cfg and 'name' in setup_cfg['metadata']:
+            package_name = setup_cfg['metadata']['name']
+
+    packages = config.getini("astropy_header_packages")
+
+    if len(packages) == 0:
+        packages = DEFAULT_PACKAGES
+    elif len(packages) == 1 and ',' in packages[0]:
+        packages = [pkg.strip() for pkg in packages[0].split(',')]
+
+    if package_name is not None and package_name not in packages:
+        packages.append(package_name)
+
+    if 'astropy' not in packages:
+        packages.append('astropy')
 
     try:
         stdoutencoding = sys.stdout.encoding or 'ascii'
@@ -34,16 +55,6 @@ def pytest_report_header(config):
         stdoutencoding = 'ascii'
 
     args = config.args
-
-    # TESTED_VERSIONS can contain the affiliated package version, too
-    if len(TESTED_VERSIONS) > 1:
-        for pkg, version in TESTED_VERSIONS.items():
-            if pkg not in ['Astropy', 'astropy_helpers']:
-                s = "\nRunning tests with {} version {}.\n".format(
-                    pkg, version)
-    else:
-        s = "\nRunning tests with Astropy version {}.\n".format(
-            TESTED_VERSIONS['Astropy'])
 
     # Per https://github.com/astropy/astropy/pull/4204, strip the rootdir from
     # each directory argument
@@ -57,7 +68,7 @@ def pytest_report_header(config):
     else:
         dirs = args
 
-    s += "Running tests in {}.\n\n".format(" ".join(dirs))
+    s = "Running tests in {}.\n\n".format(" ".join(dirs))
 
     s += "Date: {}\n\n".format(datetime.datetime.now().isoformat()[:19])
 
@@ -79,30 +90,17 @@ def pytest_report_header(config):
     s += "float info: dig: {0.dig}, mant_dig: {0.dig}\n\n".format(
         sys.float_info)
 
-    for module_display, module_name in PYTEST_HEADER_MODULES.items():
-        try:
-            with ignore_warnings(DeprecationWarning):
-                module = resolve_name(module_name)
-        except ImportError:
-            s += f"{module_display}: not available\n"
+    s += f"Package versions: \n"
+
+    for package_name in packages:
+        if package_name in working_set.by_key:
+            req_pkg = working_set.by_key[package_name]
+            version = req_pkg.version
         else:
-            try:
-                version = module.__version__
-            except AttributeError:
-                version = 'unknown (no __version__ attribute)'
-            s += f"{module_display}: {version}\n"
+            version = 'not available'
+        s += f"{package_name}: {version}\n"
 
-    # Helpers version
-    if 'astropy_helpers' in TESTED_VERSIONS:
-        astropy_helpers_version = TESTED_VERSIONS['astropy_helpers']
-    else:
-        try:
-            from astropy.version import astropy_helpers_version
-        except ImportError:
-            astropy_helpers_version = None
-
-    if astropy_helpers_version:
-        s += f"astropy_helpers: {astropy_helpers_version}\n"
+    s += f"\n"
 
     special_opts = ["remote_data", "pep8"]
     opts = []
