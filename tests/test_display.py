@@ -176,7 +176,7 @@ def test_nonexistent(testdir, capsys, method):
 
 def test_modify_in_conftest(testdir, capsys):
     testdir.makeconftest("""
-    from pytest_astropy.display import PYTEST_HEADER_MODULES, TESTED_VERSIONS
+    from pytest_astropy_header.display import PYTEST_HEADER_MODULES, TESTED_VERSIONS
 
     def pytest_configure(config):
         config.option.astropy_header = True
