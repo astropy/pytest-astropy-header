@@ -1,4 +1,4 @@
-0.1 (unreleased)
+0.1 (2019-10-25)
 ================
 
 - Initial release.
