@@ -12,32 +12,44 @@ import math
 from collections import OrderedDict
 from distutils.version import LooseVersion
 
-from astropy import __version__ as astropy_version
-from astropy.tests.helper import ignore_warnings
-from astropy.utils.introspection import resolve_name
-
 PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
                                     ('Scipy', 'scipy'),
                                     ('Matplotlib', 'matplotlib'),
                                     ('h5py', 'h5py'),
                                     ('Pandas', 'pandas')])
-TESTED_VERSIONS = OrderedDict([('Astropy', astropy_version)])
 
-ASTROPY_LT_30 = LooseVersion(astropy_version) < '3.0'
-ASTROPY_LT_40 = LooseVersion(astropy_version) < '4.0'
+try:
 
-# If using a version of astropy that has the display plugin, we make sure that
-# we use those variables for listing the packages, in case we choose to let
-# that plugin handle things below (which we do if that plugin is active).
-if ASTROPY_LT_30:
-    from astropy.tests.pytest_plugins import (PYTEST_HEADER_MODULES,
-                                              TESTED_VERSIONS)
-elif ASTROPY_LT_40:
-    from astropy.tests.plugins.display import (PYTEST_HEADER_MODULES,
-                                               TESTED_VERSIONS)
+    from astropy import __version__ as astropy_version
+    from astropy.tests.helper import ignore_warnings
+    from astropy.utils.introspection import resolve_name
+
+except ImportError:
+
+    ASTROPY_INSTALLED = False
+
+else:
+
+    ASTROPY_INSTALLED = True
+
+    TESTED_VERSIONS = OrderedDict([('Astropy', astropy_version)])
+
+    ASTROPY_LT_30 = LooseVersion(astropy_version) < '3.0'
+    ASTROPY_LT_40 = LooseVersion(astropy_version) < '4.0'
+
+    # If using a version of astropy that has the display plugin, we make sure that
+    # we use those variables for listing the packages, in case we choose to let
+    # that plugin handle things below (which we do if that plugin is active).
+    if ASTROPY_LT_30:
+        from astropy.tests.pytest_plugins import (PYTEST_HEADER_MODULES,
+                                                  TESTED_VERSIONS)
+    elif ASTROPY_LT_40:
+        from astropy.tests.plugins.display import (PYTEST_HEADER_MODULES,
+                                                   TESTED_VERSIONS)
 
 
 def pytest_addoption(parser):
+
     group = parser.getgroup("astropy header options")
     group.addoption('--astropy-header', action='store_true',
                     help="Show the pytest-astropy header")
@@ -50,6 +62,9 @@ def pytest_addoption(parser):
 
 
 def pytest_report_header(config):
+
+    if not ASTROPY_INSTALLED:
+        return
 
     # If the astropy display plugin is registered, we stop now and let it
     # handle the header.
