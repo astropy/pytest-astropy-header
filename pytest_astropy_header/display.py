@@ -1,14 +1,15 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 """
 This plugin provides customization of the header displayed by pytest for
-reporting purposes. PYTEST_DONT_REWRITE
-"""
+reporting purposes.
 
+PYTEST_DONT_REWRITE
+
+"""
 import os
 import sys
 import datetime
 import locale
-import math
 from collections import OrderedDict
 from distutils.version import LooseVersion
 
