@@ -34,8 +34,11 @@ else:
 
     TESTED_VERSIONS = OrderedDict([('Astropy', astropy_version)])
 
-    ASTROPY_LT_30 = LooseVersion(astropy_version) < '3.0'
-    ASTROPY_LT_40 = LooseVersion(astropy_version) < '4.0'
+    if astropy_version == 'unknown':  # assume developer version
+        ASTROPY_LT_30 = ASTROPY_LT_40 = False
+    else:
+        ASTROPY_LT_30 = LooseVersion(astropy_version) < '3.0'
+        ASTROPY_LT_40 = LooseVersion(astropy_version) < '4.0'
 
     # If using a version of astropy that has the display plugin, we make sure that
     # we use those variables for listing the packages, in case we choose to let
