@@ -1,3 +1,8 @@
+0.1.3 (unreleased)
+==================
+
+- Don't show astropy-helpers version in packages that don't use it. [#16]
+
 0.1.2 (2019-12-18)
 ==================
 
