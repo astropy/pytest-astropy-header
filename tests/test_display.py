@@ -1,6 +1,13 @@
+import sys
 import pytest
 
 import numpy
+
+if sys.version_info[0] >= 3:
+    import builtins
+else:
+    import __builtin__ as builtins
+
 
 NUMPY_VERSION = numpy.__version__
 
@@ -42,7 +49,24 @@ def test_enabled(testdir, capsys, method):
             def pytest_configure(config):
                 config.option.astropy_header = True
         """)
-    testdir.inline_run()
+        testdir.inline_run()
+    out, err = capsys.readouterr()
+    lines = extract_package_version_lines(out)
+    assert len(lines) == 5
+    assert lines[0].startswith('Numpy: ')
+    assert lines[1].startswith('Scipy: ')
+    assert lines[2].startswith('Matplotlib: ')
+    assert lines[3].startswith('h5py: ')
+    assert lines[4].startswith('Pandas: ')
+
+
+
+def test_astropy_helpers(testdir, capsys):
+    try:
+        builtins._ASTROPY_SETUP_ = True
+        testdir.inline_run("--astropy-header")
+    finally:
+        del builtins._ASTROPY_SETUP_
     out, err = capsys.readouterr()
     lines = extract_package_version_lines(out)
     assert len(lines) == 6
@@ -100,9 +124,8 @@ def test_override_package_single(testdir, capsys, method):
         testdir.inline_run()
     out, err = capsys.readouterr()
     lines = extract_package_version_lines(out)
-    assert len(lines) == 2
+    assert len(lines) == 1
     assert lines[0] == 'numpy: {NUMPY_VERSION}'.format(NUMPY_VERSION=NUMPY_VERSION)
-    assert lines[1].startswith('astropy-helpers: ')
 
 
 @pytest.mark.parametrize('method', ['cli', 'ini', 'ini_list', 'conftest'])
@@ -135,10 +158,9 @@ def test_override_package_multiple(testdir, capsys, method):
     out, err = capsys.readouterr()
     print(out)
     lines = extract_package_version_lines(out)
-    assert len(lines) == 3
+    assert len(lines) == 2
     assert lines[0] == 'numpy: {NUMPY_VERSION}'.format(NUMPY_VERSION=NUMPY_VERSION)
     assert lines[1].startswith('pandas')
-    assert lines[2].startswith('astropy-helpers: ')
 
 
 @pytest.mark.parametrize('method', ['cli', 'ini', 'ini_list', 'conftest'])
@@ -169,9 +191,8 @@ def test_nonexistent(testdir, capsys, method):
         testdir.inline_run()
     out, err = capsys.readouterr()
     lines = extract_package_version_lines(out)
-    assert len(lines) == 2
+    assert len(lines) == 1
     assert lines[0] == 'apackagethatdoesnotexist: not available'
-    assert lines[1].startswith('astropy-helpers: ')
 
 
 def test_modify_in_conftest(testdir, capsys):
@@ -188,11 +209,10 @@ def test_modify_in_conftest(testdir, capsys):
     out, err = capsys.readouterr()
     assert err == ''
     lines = extract_package_version_lines(out)
-    assert len(lines) == 6
+    assert len(lines) == 5
     assert lines[0].startswith('Numpy: ')
     assert lines[1].startswith('Scipy: ')
     assert lines[2].startswith('Matplotlib: ')
     assert lines[3].startswith('h5py: ')
     assert lines[4].startswith('scikit-image: ')
-    assert lines[5].startswith('astropy-helpers: ')
     assert 'Running tests with fakepackage version 1.0.2' in out

@@ -8,9 +8,13 @@ import os
 import sys
 import datetime
 import locale
-import math
 from collections import OrderedDict
 from distutils.version import LooseVersion
+
+if sys.version_info[0] >= 3:
+    import builtins
+else:
+    import __builtin__ as builtins
 
 PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
                                     ('Scipy', 'scipy'),
@@ -157,17 +161,20 @@ def pytest_report_header(config):
                 version = 'unknown (no __version__ attribute)'
             s += "{module_display}: {version}\n".format(module_display=module_display, version=version)
 
-    # Helpers version
-    if 'astropy_helpers' in TESTED_VERSIONS:
-        astropy_helpers_version = TESTED_VERSIONS['astropy_helpers']
-    else:
-        try:
-            from astropy.version import astropy_helpers_version
-        except ImportError:
-            astropy_helpers_version = None
+    # Show the astropy-helpers version, if appropriate. We only show this if
+    # the _ASTROPY_SETUP_ variable is set since this indicates an old-style
+    # setup.py that is usually associated with astropy-helpers
+    if getattr(builtins, '_ASTROPY_SETUP_', False):
+        if 'astropy_helpers' in TESTED_VERSIONS:
+            astropy_helpers_version = TESTED_VERSIONS['astropy_helpers']
+        else:
+            try:
+                from astropy.version import astropy_helpers_version
+            except ImportError:
+                astropy_helpers_version = None
 
-    if astropy_helpers_version:
-        s += "astropy-helpers: {astropy_helpers_version}\n".format(astropy_helpers_version=astropy_helpers_version)
+        if astropy_helpers_version:
+            s += "astropy-helpers: {astropy_helpers_version}\n".format(astropy_helpers_version=astropy_helpers_version)
 
     s += "\n"
 
