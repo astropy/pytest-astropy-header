@@ -25,7 +25,6 @@ PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
 try:
 
     from astropy import __version__ as astropy_version
-    from astropy.tests.helper import ignore_warnings
     from astropy.utils.introspection import resolve_name
 
 except ImportError:
@@ -128,6 +127,7 @@ def pytest_report_header(config):
 
     s += "Date: {}\n\n".format(datetime.datetime.now().isoformat()[:19])
 
+    import warnings
     from platform import platform
     plat = platform()
     if isinstance(plat, bytes):
@@ -150,7 +150,8 @@ def pytest_report_header(config):
 
     for module_display, module_name in packages_to_display.items():
         try:
-            with ignore_warnings(DeprecationWarning):
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore', category=DeprecationWarning)
                 module = resolve_name(module_name)
         except ImportError:
             s += "{module_display}: not available\n".format(module_display=module_display)
