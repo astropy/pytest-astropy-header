@@ -31,6 +31,7 @@ try:
 except ImportError:
 
     ASTROPY_INSTALLED = False
+    TESTED_VERSIONS = OrderedDict()
 
 else:
 
