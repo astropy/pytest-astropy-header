@@ -2,8 +2,10 @@
 """
 This plugin provides customization of the header displayed by pytest for
 reporting purposes.
-"""
 
+PYTEST_DONT_REWRITE
+
+"""
 import os
 import sys
 import datetime
