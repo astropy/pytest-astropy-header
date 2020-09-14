@@ -12,6 +12,8 @@ __pycache__
 
 # Other generated files
 MANIFEST
+pytest_astropy_header/version.py
+pip-wheel-metadata/
 
 # Sphinx
 _build
