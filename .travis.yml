@@ -15,27 +15,23 @@ env:
         # The following versions are the 'default' for tests, unless
         # overidden underneath. They are defined here in order to save having
         # to repeat them for all configurations.
-        - PYTHON_VERSION=3.7
-        - PYTEST_VERSION=4
+        - PYTHON_VERSION=3.8
+        - PYTEST_VERSION=6
         - PYTEST_COMMAND='pytest'
         - NUMPY_VERSION=stable
         - CONDA_DEPENDENCIES='astropy'
 
     matrix:
-        - PYTHON_VERSION=3.5 NUMPY_VERSION=1.15
-        - PYTHON_VERSION=3.6
-        - PYTHON_VERSION=3.7 PYTEST_VERSION=3.8
-        - PYTHON_VERSION=3.7 PYTEST_VERSION=3.9
+        - PYTHON_VERSION=3.6 NUMPY_VERSION=1.15 PYTEST_VERSION=3.9
+        - PYTHON_VERSION=3.7 PYTEST_VERSION=4
         - PYTHON_VERSION=3.7
+        - PYTHON_VERSION=3.8 PYTEST_VERSION=5
 
 matrix:
     include:
         # Try a run on OSX with latest versions of python and pytest
         - os: osx
-          env: PYTHON_VERSION=3.7
-
-        # Try a run against latest pytest
-        - env: PYTHON_VERSION=3.7 PYTEST_VERSION=5
+          env: PYTHON_VERSION=3.8
 
 install:
     - git clone git://github.com/astropy/ci-helpers.git
