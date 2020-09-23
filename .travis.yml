@@ -9,6 +9,13 @@ os:
 # Use Travis' container-based architecture
 sudo: false
 
+notifications:
+  slack:
+    on_success: never
+    on_failure: always
+    secure: "dC8PFz3yQb/XQMS3KxatBRwe8fF2fp5FZOFD0Q4VJ8h+UYJKNb0V3iallHT7QpuvGumFnEl1YIgCu5xY2Fylm65139VmeuORQ39XBGMR6NT5M3tD0FDVEx3B6yVwFEMWjOUoWT4whf6j4XoKLMnxx46lJ7jnScPpcHckylpSuzHZrpCxZpLdSY1rP2o5hKM+IuhC32ddIKsudhobi43Zz95dGeGO45UerbEM/t3sB7pKCEvm+sbfqqiMNjhd3NWoPl0jaBjp3FJBr0ZAou1eA3Tg6ecNuPimilWstE8aNO0ue12BoFEczx09pQdJm+iEb1zEZU5M6yKtKu7vOzwJndZi1MBFGAM9uVZOr1BDqji0sjGs+w2IRXgH4c9S5eLkK66hozGQgPVuc7GcfZwxGTjYTBibnTKHrMkF4gbQv6VkoYodbPcFmsBkvKPeSoqBx8dVmW8cGXvtIoTR37pbFyvrNjCcp00ZD+tEpBIBJP+wX0lf6VifFGQ56PIzpEd2oqxeyt28eAs+cA/iI6qlhCkNccYfVXaNNksdtCEgjVnp3vJhDI8Od2zSDzXnJzVg7Dbs6CxH/4n9aiwpgZUwI0eDXwv+SUvZOutF2QFBjZ4p38uLVW6wIo2dOqZAk4rUSlBF8mfA76aqplXcstCZwEGLAp0/IMO8hjeHocZxGX4="
+    if: type = cron
+    
 env:
     global:
         # The following versions are the 'default' for tests, unless
