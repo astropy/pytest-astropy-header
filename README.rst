@@ -172,9 +172,9 @@ plugin from lists such as::
 Development Status
 ------------------
 
-.. image:: https://travis-ci.org/astropy/pytest-astropy-header.svg
-    :target: https://travis-ci.org/astropy/pytest-astropy-header
-    :alt: Travis CI Status
+.. image:: https://github.com/astropy/pytest-astropy-header/workflows/CI/badge.svg
+    :target: https://github.com/astropy/pytest-astropy-header/actions
+    :alt: CI Status
 
 Questions, bug reports, and feature requests can be submitted on `github`_.
 
