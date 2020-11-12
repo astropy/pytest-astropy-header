@@ -1,13 +1,7 @@
-import sys
+import builtins
+
 import pytest
-
 import numpy
-
-if sys.version_info[0] >= 3:
-    import builtins
-else:
-    import __builtin__ as builtins
-
 
 NUMPY_VERSION = numpy.__version__
 
@@ -60,7 +54,6 @@ def test_enabled(testdir, capsys, method):
     assert lines[4].startswith('Pandas: ')
 
 
-
 def test_astropy_helpers(testdir, capsys):
     try:
         builtins._ASTROPY_SETUP_ = True
@@ -69,13 +62,12 @@ def test_astropy_helpers(testdir, capsys):
         del builtins._ASTROPY_SETUP_
     out, err = capsys.readouterr()
     lines = extract_package_version_lines(out)
-    assert len(lines) == 6
+    assert len(lines) == 5
     assert lines[0].startswith('Numpy: ')
     assert lines[1].startswith('Scipy: ')
     assert lines[2].startswith('Matplotlib: ')
     assert lines[3].startswith('h5py: ')
     assert lines[4].startswith('Pandas: ')
-    assert lines[5].startswith('astropy-helpers: ')
 
 
 @pytest.mark.parametrize('method', ['ini', 'conftest'])
