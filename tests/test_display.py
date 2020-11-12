@@ -1,5 +1,3 @@
-import builtins
-
 import pytest
 import numpy
 
@@ -44,22 +42,6 @@ def test_enabled(testdir, capsys, method):
                 config.option.astropy_header = True
         """)
         testdir.inline_run()
-    out, err = capsys.readouterr()
-    lines = extract_package_version_lines(out)
-    assert len(lines) == 5
-    assert lines[0].startswith('Numpy: ')
-    assert lines[1].startswith('Scipy: ')
-    assert lines[2].startswith('Matplotlib: ')
-    assert lines[3].startswith('h5py: ')
-    assert lines[4].startswith('Pandas: ')
-
-
-def test_astropy_helpers(testdir, capsys):
-    try:
-        builtins._ASTROPY_SETUP_ = True
-        testdir.inline_run("--astropy-header")
-    finally:
-        del builtins._ASTROPY_SETUP_
     out, err = capsys.readouterr()
     lines = extract_package_version_lines(out)
     assert len(lines) == 5
