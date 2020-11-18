@@ -3,6 +3,8 @@
 
 - Don't show astropy-helpers version in packages that don't use it. [#16]
 
+- Remove compatibility code for Astropy < 4.0, and for astropy-helpers. [#32]
+
 0.1.2 (2019-12-18)
 ==================
 
