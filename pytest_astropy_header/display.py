@@ -10,13 +10,9 @@ import os
 import sys
 import datetime
 import locale
+import builtins
 from collections import OrderedDict
 from distutils.version import LooseVersion
-
-if sys.version_info[0] >= 3:
-    import builtins
-else:
-    import __builtin__ as builtins
 
 PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
                                     ('Scipy', 'scipy'),
