@@ -12,7 +12,6 @@ import datetime
 import locale
 import builtins
 from collections import OrderedDict
-from distutils.version import LooseVersion
 
 PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
                                     ('Scipy', 'scipy'),
@@ -35,20 +34,6 @@ else:
 
     TESTED_VERSIONS = OrderedDict([('Astropy', astropy_version)])
 
-    if astropy_version == 'unknown':  # assume developer version
-        ASTROPY_LT_40 = False
-    else:
-        ASTROPY_LT_40 = LooseVersion(astropy_version) < '4.0'
-
-    # If using a version of astropy that has the display plugin, we make sure that
-    # we use those variables for listing the packages, in case we choose to let
-    # that plugin handle things below (which we do if that plugin is active).
-    try:
-        from astropy.tests.plugins.display import (PYTEST_HEADER_MODULES,
-                                                   TESTED_VERSIONS)
-    except ImportError:
-        pass
-
 
 def pytest_addoption(parser):
 
@@ -66,11 +51,6 @@ def pytest_addoption(parser):
 def pytest_report_header(config):
 
     if not ASTROPY_INSTALLED:
-        return
-
-    # If the astropy display plugin is registered, we stop now and let it
-    # handle the header.
-    if ASTROPY_LT_40 and config.pluginmanager.hasplugin('astropy.tests.plugins.display'):
         return
 
     if not config.getoption("astropy_header") and not config.getini("astropy_header"):
