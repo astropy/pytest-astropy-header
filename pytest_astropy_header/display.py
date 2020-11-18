@@ -40,20 +40,18 @@ else:
     TESTED_VERSIONS = OrderedDict([('Astropy', astropy_version)])
 
     if astropy_version == 'unknown':  # assume developer version
-        ASTROPY_LT_30 = ASTROPY_LT_40 = False
+        ASTROPY_LT_40 = False
     else:
-        ASTROPY_LT_30 = LooseVersion(astropy_version) < '3.0'
         ASTROPY_LT_40 = LooseVersion(astropy_version) < '4.0'
 
     # If using a version of astropy that has the display plugin, we make sure that
     # we use those variables for listing the packages, in case we choose to let
     # that plugin handle things below (which we do if that plugin is active).
-    if ASTROPY_LT_30:
-        from astropy.tests.pytest_plugins import (PYTEST_HEADER_MODULES,
-                                                  TESTED_VERSIONS)
-    elif ASTROPY_LT_40:
+    try:
         from astropy.tests.plugins.display import (PYTEST_HEADER_MODULES,
                                                    TESTED_VERSIONS)
+    except ImportError:
+        pass
 
 
 def pytest_addoption(parser):
