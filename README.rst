@@ -64,7 +64,7 @@ inside your package::
     def pytest_configure(config):
         config.option.astropy_header = True
 
-**or** add the following to your ``setup.cfg``:
+**or** add the following to your ``setup.cfg``::
 
     [tool:pytest]
     astropy_header = true
