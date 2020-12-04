@@ -11,12 +11,6 @@ import sys
 import datetime
 import locale
 from collections import OrderedDict
-from distutils.version import LooseVersion
-
-if sys.version_info[0] >= 3:
-    import builtins
-else:
-    import __builtin__ as builtins
 
 PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
                                     ('Scipy', 'scipy'),
@@ -25,35 +19,13 @@ PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
                                     ('Pandas', 'pandas')])
 
 try:
-
     from astropy import __version__ as astropy_version
     from astropy.utils.introspection import resolve_name
-
 except ImportError:
-
     ASTROPY_INSTALLED = False
-
 else:
-
     ASTROPY_INSTALLED = True
-
     TESTED_VERSIONS = OrderedDict([('Astropy', astropy_version)])
-
-    if astropy_version == 'unknown':  # assume developer version
-        ASTROPY_LT_30 = ASTROPY_LT_40 = False
-    else:
-        ASTROPY_LT_30 = LooseVersion(astropy_version) < '3.0'
-        ASTROPY_LT_40 = LooseVersion(astropy_version) < '4.0'
-
-    # If using a version of astropy that has the display plugin, we make sure that
-    # we use those variables for listing the packages, in case we choose to let
-    # that plugin handle things below (which we do if that plugin is active).
-    if ASTROPY_LT_30:
-        from astropy.tests.pytest_plugins import (PYTEST_HEADER_MODULES,
-                                                  TESTED_VERSIONS)
-    elif ASTROPY_LT_40:
-        from astropy.tests.plugins.display import (PYTEST_HEADER_MODULES,
-                                                   TESTED_VERSIONS)
 
 
 def pytest_addoption(parser):
@@ -72,11 +44,6 @@ def pytest_addoption(parser):
 def pytest_report_header(config):
 
     if not ASTROPY_INSTALLED:
-        return
-
-    # If the astropy display plugin is registered, we stop now and let it
-    # handle the header.
-    if ASTROPY_LT_40 and config.pluginmanager.hasplugin('astropy.tests.plugins.display'):
         return
 
     if not config.getoption("astropy_header") and not config.getini("astropy_header"):
@@ -106,7 +73,7 @@ def pytest_report_header(config):
     # TESTED_VERSIONS can contain the affiliated package version, too
     if len(TESTED_VERSIONS) > 1:
         for pkg, version in TESTED_VERSIONS.items():
-            if pkg not in ['Astropy', 'astropy_helpers']:
+            if pkg not in ['Astropy']:
                 s = "\nRunning tests with {} version {}.\n".format(
                     pkg, version)
     else:
@@ -163,21 +130,6 @@ def pytest_report_header(config):
             except AttributeError:
                 version = 'unknown (no __version__ attribute)'
             s += "{module_display}: {version}\n".format(module_display=module_display, version=version)
-
-    # Show the astropy-helpers version, if appropriate. We only show this if
-    # the _ASTROPY_SETUP_ variable is set since this indicates an old-style
-    # setup.py that is usually associated with astropy-helpers
-    if getattr(builtins, '_ASTROPY_SETUP_', False):
-        if 'astropy_helpers' in TESTED_VERSIONS:
-            astropy_helpers_version = TESTED_VERSIONS['astropy_helpers']
-        else:
-            try:
-                from astropy.version import astropy_helpers_version
-            except ImportError:
-                astropy_helpers_version = None
-
-        if astropy_helpers_version:
-            s += "astropy-helpers: {astropy_helpers_version}\n".format(astropy_helpers_version=astropy_helpers_version)
 
     s += "\n"
 
