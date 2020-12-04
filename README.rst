@@ -100,7 +100,7 @@ end of the Astropy header, you could define::
     def pytest_report_header(config):
         footer = ("This is some custom text that will appear after the "
                   "Astropy pytest header!")
-        return hdr + "\n"
+        return footer + "\n"
 
 
 Migrating from the astropy header plugin to pytest-astropy-header
