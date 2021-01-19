@@ -13,6 +13,7 @@ import os
 import sys
 from collections import OrderedDict
 
+TESTED_VERSIONS = {}
 PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
                                     ('Scipy', 'scipy'),
                                     ('Matplotlib', 'matplotlib'),
@@ -22,10 +23,9 @@ PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
 try:
     from astropy import __version__ as astropy_version
 except ImportError:
-    ASTROPY_INSTALLED = False
+    pass
 else:
-    ASTROPY_INSTALLED = True
-    TESTED_VERSIONS = OrderedDict([('Astropy', astropy_version)])
+    TESTED_VERSIONS['Astropy'] = astropy_version
 
 
 def pytest_addoption(parser):
@@ -42,9 +42,6 @@ def pytest_addoption(parser):
 
 
 def pytest_report_header(config):
-
-    if not ASTROPY_INSTALLED:
-        return
 
     if not config.getoption("astropy_header") and not config.getini("astropy_header"):
         return
