@@ -6,10 +6,11 @@ reporting purposes.
 PYTEST_DONT_REWRITE
 
 """
+import datetime
+import importlib
+import locale
 import os
 import sys
-import datetime
-import locale
 from collections import OrderedDict
 
 PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
@@ -20,7 +21,6 @@ PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
 
 try:
     from astropy import __version__ as astropy_version
-    from astropy.utils.introspection import resolve_name
 except ImportError:
     ASTROPY_INSTALLED = False
 else:
@@ -121,7 +121,7 @@ def pytest_report_header(config):
         try:
             with warnings.catch_warnings():
                 warnings.filterwarnings('ignore', category=DeprecationWarning)
-                module = resolve_name(module_name)
+                module = importlib.import_module(module_name)
         except ImportError:
             s += "{module_display}: not available\n".format(module_display=module_display)
         else:
