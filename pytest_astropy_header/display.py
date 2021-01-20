@@ -73,7 +73,7 @@ def pytest_report_header(config):
     for pkg, version in TESTED_VERSIONS.items():
         if skip_astropy and pkg == 'Astropy':
             continue
-        s = "\nRunning tests with {} version {}.\n".format(pkg, version)
+        s = f"\nRunning tests with {pkg} version {version}.\n"
 
     # Per https://github.com/astropy/astropy/pull/4204, strip the rootdir from
     # each directory argument
@@ -96,9 +96,9 @@ def pytest_report_header(config):
     plat = platform()
     if isinstance(plat, bytes):
         plat = plat.decode(stdoutencoding, 'replace')
-    s += "Platform: {plat}\n\n".format(plat=plat)
-    s += "Executable: {executable}\n\n".format(executable=sys.executable)
-    s += "Full Python Version: \n{version}\n\n".format(version=sys.version)
+    s += f"Platform: {plat}\n\n"
+    s += f"Executable: {sys.executable}\n\n"
+    s += f"Full Python Version: \n{sys.version}\n\n"
 
     s += "encodings: sys: {}, locale: {}, filesystem: {}".format(
         sys.getdefaultencoding(),
@@ -106,7 +106,7 @@ def pytest_report_header(config):
         sys.getfilesystemencoding())
     s += '\n'
 
-    s += "byteorder: {byteorder}\n".format(byteorder=sys.byteorder)
+    s += f"byteorder: {sys.byteorder}\n"
     s += "float info: dig: {0.dig}, mant_dig: {0.dig}\n\n".format(
         sys.float_info)
 
@@ -118,13 +118,13 @@ def pytest_report_header(config):
                 warnings.filterwarnings('ignore', category=DeprecationWarning)
                 module = importlib.import_module(module_name)
         except ImportError:
-            s += "{module_display}: not available\n".format(module_display=module_display)
+            s += f"{module_display}: not available\n"
         else:
             try:
                 version = module.__version__
             except AttributeError:
                 version = 'unknown (no __version__ attribute)'
-            s += "{module_display}: {version}\n".format(module_display=module_display, version=version)
+            s += f"{module_display}: {version}\n"
 
     s += "\n"
 
