@@ -70,10 +70,11 @@ def pytest_report_header(config):
     # TESTED_VERSIONS can contain the affiliated package version, too
     skip_astropy = len(TESTED_VERSIONS) > 1 and 'Astropy' in TESTED_VERSIONS
 
+    s = ''
     for pkg, version in TESTED_VERSIONS.items():
         if skip_astropy and pkg == 'Astropy':
             continue
-        s = f"\nRunning tests with {pkg} version {version}.\n"
+        s += f"\nRunning tests with {pkg} version {version}.\n"
 
     # Per https://github.com/astropy/astropy/pull/4204, strip the rootdir from
     # each directory argument
