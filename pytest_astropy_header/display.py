@@ -20,13 +20,6 @@ PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
                                     ('h5py', 'h5py'),
                                     ('Pandas', 'pandas')])
 
-try:
-    from astropy import __version__ as astropy_version
-except ImportError:
-    pass
-else:
-    TESTED_VERSIONS['Astropy'] = astropy_version
-
 
 def pytest_addoption(parser):
 
@@ -67,13 +60,8 @@ def pytest_report_header(config):
 
     args = config.args
 
-    # TESTED_VERSIONS can contain the affiliated package version, too
-    skip_astropy = len(TESTED_VERSIONS) > 1 and 'Astropy' in TESTED_VERSIONS
-
     s = ''
     for pkg, version in TESTED_VERSIONS.items():
-        if skip_astropy and pkg == 'Astropy':
-            continue
         s += f"\nRunning tests with {pkg} version {version}.\n"
 
     # Per https://github.com/astropy/astropy/pull/4204, strip the rootdir from
