@@ -27,14 +27,14 @@ jobs:
     - name: List result
       run: ls -l dist
 
-    - name: Check long_description
+    - name: Check wheel
       run: python -m twine check --strict dist/*
 
     - name: Test package
       run: |
         cd ..
         python -m venv testenv
-        testenv/bin/pip install pytest pytest-astropy-header/dist/*.whl
+        testenv/bin/pip install astropy pytest pytest-astropy-header/dist/*.whl
         testenv/bin/pytest pytest-astropy-header/tests
 
     - name: Publish distribution 📦 to Test PyPI
