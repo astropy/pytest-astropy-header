@@ -6,26 +6,19 @@ reporting purposes.
 PYTEST_DONT_REWRITE
 
 """
+import datetime
+import importlib
+import locale
 import os
 import sys
-import datetime
-import locale
 from collections import OrderedDict
 
+TESTED_VERSIONS = {}
 PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
                                     ('Scipy', 'scipy'),
                                     ('Matplotlib', 'matplotlib'),
                                     ('h5py', 'h5py'),
                                     ('Pandas', 'pandas')])
-
-try:
-    from astropy import __version__ as astropy_version
-    from astropy.utils.introspection import resolve_name
-except ImportError:
-    ASTROPY_INSTALLED = False
-else:
-    ASTROPY_INSTALLED = True
-    TESTED_VERSIONS = OrderedDict([('Astropy', astropy_version)])
 
 
 def pytest_addoption(parser):
@@ -42,9 +35,6 @@ def pytest_addoption(parser):
 
 
 def pytest_report_header(config):
-
-    if not ASTROPY_INSTALLED:
-        return
 
     if not config.getoption("astropy_header") and not config.getini("astropy_header"):
         return
@@ -70,15 +60,9 @@ def pytest_report_header(config):
 
     args = config.args
 
-    # TESTED_VERSIONS can contain the affiliated package version, too
-    if len(TESTED_VERSIONS) > 1:
-        for pkg, version in TESTED_VERSIONS.items():
-            if pkg not in ['Astropy']:
-                s = "\nRunning tests with {} version {}.\n".format(
-                    pkg, version)
-    else:
-        s = "\nRunning tests with Astropy version {}.\n".format(
-            TESTED_VERSIONS['Astropy'])
+    s = ''
+    for pkg, version in TESTED_VERSIONS.items():
+        s += f"\nRunning tests with {pkg} version {version}.\n"
 
     # Per https://github.com/astropy/astropy/pull/4204, strip the rootdir from
     # each directory argument
@@ -101,9 +85,9 @@ def pytest_report_header(config):
     plat = platform()
     if isinstance(plat, bytes):
         plat = plat.decode(stdoutencoding, 'replace')
-    s += "Platform: {plat}\n\n".format(plat=plat)
-    s += "Executable: {executable}\n\n".format(executable=sys.executable)
-    s += "Full Python Version: \n{version}\n\n".format(version=sys.version)
+    s += f"Platform: {plat}\n\n"
+    s += f"Executable: {sys.executable}\n\n"
+    s += f"Full Python Version: \n{sys.version}\n\n"
 
     s += "encodings: sys: {}, locale: {}, filesystem: {}".format(
         sys.getdefaultencoding(),
@@ -111,7 +95,7 @@ def pytest_report_header(config):
         sys.getfilesystemencoding())
     s += '\n'
 
-    s += "byteorder: {byteorder}\n".format(byteorder=sys.byteorder)
+    s += f"byteorder: {sys.byteorder}\n"
     s += "float info: dig: {0.dig}, mant_dig: {0.dig}\n\n".format(
         sys.float_info)
 
@@ -121,15 +105,15 @@ def pytest_report_header(config):
         try:
             with warnings.catch_warnings():
                 warnings.filterwarnings('ignore', category=DeprecationWarning)
-                module = resolve_name(module_name)
+                module = importlib.import_module(module_name)
         except ImportError:
-            s += "{module_display}: not available\n".format(module_display=module_display)
+            s += f"{module_display}: not available\n"
         else:
             try:
                 version = module.__version__
             except AttributeError:
                 version = 'unknown (no __version__ attribute)'
-            s += "{module_display}: {version}\n".format(module_display=module_display, version=version)
+            s += f"{module_display}: {version}\n"
 
     s += "\n"
 
