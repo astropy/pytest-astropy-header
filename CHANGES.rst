@@ -1,11 +1,15 @@
 0.1.3 (unreleased)
 ==================
 
-- Don't show astropy-helpers version in packages that don't use it. [#16]
+- Suppressed ``PytestAssertRewriteWarning``. [#4]
 
-- Remove compatibility code for Astropy < 4.0, and for astropy-helpers. [#32]
+- Do not show astropy-helpers version in packages that don't use it. [#16]
 
-- Remove Astropy dependency. [#34]
+- Removed compatibility code for ``astropy`` < 4.0, and for ``astropy-helpers``. [#32]
+
+- Removed ``astropy`` dependency. [#19, #34]
+
+- Bumped minimum supported Python version to 3.7 and various infrastructure updates. [#23, #39]
 
 0.1.2 (2019-12-18)
 ==================
