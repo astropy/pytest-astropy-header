@@ -2,8 +2,13 @@
 pytest-astropy-header
 =====================
 
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.5806492.svg
+    :target: https://doi.org/10.5281/zenodo.5806492
+    :alt: 10.5281/zenodo.5806492
+
 .. image:: https://img.shields.io/pypi/v/pytest-astropy-header.svg
     :target: https://pypi.python.org/pypi/pytest-astropy-header
+    :alt: PyPI
 
 .. image:: https://github.com/astropy/pytest-astropy-header/workflows/CI/badge.svg
     :target: https://github.com/astropy/pytest-astropy-header/actions
