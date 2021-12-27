@@ -2,10 +2,17 @@
 pytest-astropy-header
 =====================
 
+.. image:: https://img.shields.io/pypi/v/pytest-astropy-header.svg
+    :target: https://pypi.python.org/pypi/pytest-astropy-header
+
+.. image:: https://github.com/astropy/pytest-astropy-header/workflows/CI/badge.svg
+    :target: https://github.com/astropy/pytest-astropy-header/actions
+    :alt: CI Status
+
 This plugin package provides a way to include information about the system,
 Python installation, and select dependencies in the header of the output when
 running pytest. It can be used with packages that are not affiliated with the
-Astropy project, but is optimized for use with astropy-related projects.
+Astropy project, but is optimized for use with Astropy-related projects.
 
 Installation
 ------------
@@ -187,10 +194,6 @@ plugin from lists such as::
 
 Development Status
 ------------------
-
-.. image:: https://github.com/astropy/pytest-astropy-header/workflows/CI/badge.svg
-    :target: https://github.com/astropy/pytest-astropy-header/actions
-    :alt: CI Status
 
 Questions, bug reports, and feature requests can be submitted on `github`_.
 
