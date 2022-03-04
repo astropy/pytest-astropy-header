@@ -20,6 +20,13 @@ PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
                                     ('h5py', 'h5py'),
                                     ('Pandas', 'pandas')])
 
+# This import is needed so astropy can use pytest-astropy-header.
+# See https://github.com/astropy/pytest-astropy-header/issues/41
+try:
+    import astropy  # noqa: F401
+except ImportError:
+    pass
+
 
 def pytest_addoption(parser):
 
