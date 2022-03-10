@@ -7,20 +7,11 @@ on:
       - '*'
 
 jobs:
-  build-n-publish:
-    name: Build and publish Python 🐍 distributions 📦 to PyPI
-    runs-on: ubuntu-latest
+  publish:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@main
     if: ((github.event_name == 'push' && startsWith(github.ref, 'refs/tags')) || contains(github.event.pull_request.labels.*.name, 'Build wheels'))
-    steps:
-    - id: build
-      uses: OpenAstronomy/build-python-dist@v1
-      with:
-        pure_python_wheel: true
-        test_extras: test
-        test_command: pytest ${{ github.workspace }}/tests
-    - name: Publish distribution 📦 to PyPI
-      if: startsWith(github.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+    with:
+      test_extras: test
+      test_command: pytest $GITHUB_WORKSPACE/tests
+    secrets:
+      pypi_password: ${{ secrets.PYPI_API_TOKEN }}
