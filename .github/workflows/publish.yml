@@ -14,4 +14,4 @@ jobs:
       test_extras: test
       test_command: pytest $GITHUB_WORKSPACE/tests
     secrets:
-      pypi_password: ${{ secrets.PYPI_API_TOKEN }}
+      pypi_token: ${{ secrets.PYPI_API_TOKEN }}
