@@ -11,14 +11,10 @@ import importlib
 import locale
 import os
 import sys
-from collections import OrderedDict
 
 TESTED_VERSIONS = {}
-PYTEST_HEADER_MODULES = OrderedDict([('Numpy', 'numpy'),
-                                    ('Scipy', 'scipy'),
-                                    ('Matplotlib', 'matplotlib'),
-                                    ('h5py', 'h5py'),
-                                    ('Pandas', 'pandas')])
+DEFAULT_PACKAGES = ("Numpy", "Scipy", "Matplotlib", "h5py", "Pandas")
+PYTEST_HEADER_MODULES = {pkg: pkg.lower() for pkg in DEFAULT_PACKAGES}
 
 # This import is needed so astropy can use pytest-astropy-header.
 # See https://github.com/astropy/pytest-astropy-header/issues/41
@@ -52,11 +48,11 @@ def pytest_report_header(config):
     if astropy_header_packages_option is not None:
         if isinstance(astropy_header_packages_option, str):
             astropy_header_packages_option = [x.strip() for x in astropy_header_packages_option.split(',')]
-        packages_to_display = OrderedDict([(x, x) for x in astropy_header_packages_option])
+        packages_to_display = {x: x for x in astropy_header_packages_option}
     elif len(astropy_header_packages_ini) > 0:
         if len(astropy_header_packages_ini) == 1:
             astropy_header_packages_ini = [x.strip() for x in astropy_header_packages_ini[0].split(',')]
-        packages_to_display = OrderedDict([(x, x) for x in astropy_header_packages_ini])
+        packages_to_display = {x: x for x in astropy_header_packages_ini}
     else:
         packages_to_display = PYTEST_HEADER_MODULES
 
