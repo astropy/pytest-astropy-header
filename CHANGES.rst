@@ -1,6 +1,9 @@
 0.2.2 (unreleased)
 ==================
 
+- The plugin is now aware of the ``run_slow`` and ``run_hugemem`` options
+  introduced in ``pytest-astropy`` version 0.10.0. [#48]
+
 0.2.1 (2022-03-09)
 ==================
 
