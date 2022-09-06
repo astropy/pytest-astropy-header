@@ -1,4 +1,4 @@
-0.2.2 (unreleased)
+0.2.2 (2022-09-06)
 ==================
 
 - The plugin is now aware of the ``run_slow`` and ``run_hugemem`` options
