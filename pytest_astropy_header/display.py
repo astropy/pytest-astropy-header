@@ -120,9 +120,8 @@ def pytest_report_header(config):
 
     s += "\n"
 
-    special_opts = ["remote_data", "pep8"]
     opts = []
-    for op in special_opts:
+    for op in ("remote_data", "pep8", "run_slow", "run_hugemem"):
         op_value = getattr(config.option, op, None)
         if op_value:
             if isinstance(op_value, str):
