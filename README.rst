@@ -104,6 +104,9 @@ be compatible with different astropy versions is via the ``conftest.py`` file::
 The key to ``PYTEST_HEADER_MODULES`` should be the name that will be displayed
 in the header, and the value should be the name of the Python module.
 
+Append to default header
+^^^^^^^^^^^^^^^^^^^^^^^^
+
 If you would like to append other text to the end of the header, you can do this
 by implementing your own ``pytest_report_header()`` function in the
 ``conftest.py`` file in your package. For example, to add a custom footer to the
