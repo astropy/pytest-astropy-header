@@ -19,10 +19,8 @@ jobs:
         - macos: py39-test-pytest50
         - linux: py39-test-pytest52
         - windows: py310-test-pytest62
-        - macos: py310-test-pytest70
-        - linux: py310-test-pytest80
-        - windows: py311-test-pytest62
+        - macos: py311-test-pytest70
         - linux: py312-test-pytest80
-        - linux: py313-test-pytest81
-        - linux: py314-test-pytest90
+        - windows: py313-test-pytest81
+        - macos: py314-test-pytest90
         - linux: py314-test-pytestdev
